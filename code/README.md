@@ -27,14 +27,14 @@ Some simple explanation of the arguments used in the code.
 #### Centralized training (n=16)
 The script below trains `ResNet-BN-20` on `CIFAR-10`, as an example of centralized training algorithm `centralized_sgd` for randomly partitioned local data (w/o local data reshuffle). A global momentum (buffer) will be used in this case.
 ```bash
-declare -a list_of_n_processes=16
+declare -a list_of_n_processes=12
 declare -a list_of_graph_topologies=complete
 declare -a optimizer=centralized_sgd
 
 declare -a list_of_seeds=6
 declare -a list_of_lr_scale_factors=16
 
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python run.py \
+OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.8.12/bin/python run.py \
 --arch resnet20 --group_norm_num_groups 0 --optimizer ${optimizer} \
 --experiment demo --manual_seed ${list_of_seeds} \
 --data cifar10 --pin_memory True \
@@ -46,19 +46,19 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python ru
 --lr_scheduler MultiStepLR --lr_decay 0.1 --lr_milestone_ratios 0.5,0.75 \
 --weight_decay 1e-4 --use_nesterov True --momentum_factor 0.9 \
 --hostfile hostfile --graph_topology ${list_of_graph_topologies} --track_time True --display_tracked_time True \
---python_path $HOME/conda/envs/pytorch-py3.6/bin/python --mpi_path $HOME/.openmpi/ 
+--python_path $HOME/conda/envs/pytorch-py3.8.12/bin/python --mpi_path $HOME/.openmpi/
 ```
 
 The script below trains `distilbert-base-uncased` on `AG News`, as an example of decentralized training algorithm `centralized_adam` for randomly partitioned local data (w/o local data reshuffle). We first synchronize the gradients globally by using All-reduce, before applying them to the model.
 ```bash
-declare -a list_of_n_processes=16
+declare -a list_of_n_processes=12
 declare -a list_of_graph_topologies=complete
 declare -a optimizer=centralized_adam
 
 declare -a list_of_seeds=6
 declare -a non_iid_ness=1
 
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python run.py \
+OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.8.12/bin/python run.py \
 --arch distilbert-base-uncased --optimizer ${optimizer} --bert_conf model_scheme=vector_cls_sentence,max_seq_len=128,eval_every_batch=100 \
 --experiment demo --manual_seed ${list_of_seeds} \
 --data agnews --pin_memory True --batch_size 32 --base_batch_size 32 --num_workers 0 \
@@ -68,14 +68,14 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python ru
 --lr 1e-5 --lr_scaleup False --lr_warmup False --lr_scheduler MultiStepLR \
 --weight_decay 1e-4 \
 --hostfile hostfile --graph_topology ${list_of_graph_topologies} --track_time True --display_tracked_time True \
---python_path $HOME/conda/envs/pytorch-py3.6/bin/python --mpi_path $HOME/.openmpi/
+--python_path $HOME/conda/envs/pytorch-py3.8.12/bin/python --mpi_path $HOME/.openmpi/
 ```
 
 
 #### Decentralized training on Ring topology (n=16).
 The script below trains `ResNet-GN-20` on `CIFAR-10`, as an example of decentralized training algorithm `decentralized_sgd` on heterogeneous data (with non-iid-ness of 1). Each worker maintains an independent local momentum buffer.
 ```bash
-declare -a list_of_n_processes=16
+declare -a list_of_n_processes=12
 declare -a list_of_graph_topologies=ring
 declare -a optimizer=decentralized_sgd
 
@@ -83,7 +83,7 @@ declare -a list_of_seeds=6
 declare -a list_of_lr_scale_factors=16
 declare -a non_iid_ness=1
 
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python run.py \
+OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.8.12/bin/python run.py \
 --arch resnet20 --group_norm_num_groups 2 --optimizer ${optimizer} \
 --experiment demo --manual_seed ${list_of_seeds} \
 --data cifar10 --pin_memory True \
@@ -95,12 +95,12 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python ru
 --lr_scheduler MultiStepLR --lr_decay 0.1 --lr_milestone_ratios 0.5,0.75 \
 --weight_decay 1e-4 --use_nesterov True --momentum_factor 0.9 \
 --hostfile hostfile --graph_topology ${list_of_graph_topologies} --track_time True --display_tracked_time True \
---python_path $HOME/conda/envs/pytorch-py3.6/bin/python --mpi_path $HOME/.openmpi/ 
+--python_path $HOME/conda/envs/pytorch-py3.8.12/bin/python --mpi_path $HOME/.openmpi/ 
 ```
 
 The script below trains `ResNet-EvoNorm-20` on `CIFAR-10`, as an example of decentralized training algorithm `decentralized_qg_sgd` on heterogeneous data (with non-iid-ness of 1). Each worker maintains an independent quasi-global momentum buffer.
 ```bash
-declare -a list_of_n_processes=16
+declare -a list_of_n_processes=12
 declare -a list_of_graph_topologies=ring
 declare -a optimizer=decentralized_qg_sgd
 
@@ -108,7 +108,7 @@ declare -a list_of_seeds=6
 declare -a list_of_lr_scale_factors=16
 declare -a non_iid_ness=1
 
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python run.py \
+OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.8.12/bin/python run.py \
 --arch resnet_evonorm20 --optimizer ${optimizer} \
 --experiment demo --manual_seed ${list_of_seeds} \
 --data cifar10 --pin_memory True \
@@ -120,19 +120,19 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python ru
 --lr_scheduler MultiStepLR --lr_decay 0.1 --lr_milestone_ratios 0.5,0.75 \
 --weight_decay 1e-4 --use_nesterov True --momentum_factor 0.9 \
 --hostfile hostfile --graph_topology ${list_of_graph_topologies} --track_time True --display_tracked_time True \
---python_path $HOME/conda/envs/pytorch-py3.6/bin/python --mpi_path $HOME/.openmpi/
+--python_path $HOME/conda/envs/pytorch-py3.8.12/bin/python --mpi_path $HOME/.openmpi/
 ```
 
 The script below trains `distilbert-base-uncased` on `AG News`, as an example of decentralized training algorithm `decentralized_qg_adam` on heterogeneous data (with non-iid-ness of 1). Each worker maintains two independent quasi-global moment buffers.
 ```bash
-declare -a list_of_n_processes=16
+declare -a list_of_n_processes=12
 declare -a list_of_graph_topologies=ring
 declare -a optimizer=decentralized_qg_adam
 
 declare -a list_of_seeds=6
 declare -a non_iid_ness=1
 
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python run.py \
+OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.8.12/bin/python run.py \
 --arch distilbert-base-uncased --optimizer ${optimizer} --bert_conf model_scheme=vector_cls_sentence,max_seq_len=128,eval_every_batch=100 \
 --experiment demo --manual_seed ${list_of_seeds} \
 --data agnews --pin_memory True --batch_size 32 --base_batch_size 32 --num_workers 0 \
@@ -142,7 +142,7 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python ru
 --lr 1e-5 --lr_scaleup False --lr_warmup False --lr_scheduler MultiStepLR \
 --weight_decay 1e-4 \
 --hostfile hostfile --graph_topology ${list_of_graph_topologies} --track_time True --display_tracked_time True \
---python_path $HOME/conda/envs/pytorch-py3.6/bin/python --mpi_path $HOME/.openmpi/
+--python_path $HOME/conda/envs/pytorch-py3.8.12/bin/python --mpi_path $HOME/.openmpi/
 ```
 
 
@@ -157,7 +157,7 @@ declare -a list_of_seeds=6
 declare -a list_of_lr_scale_factors=32
 declare -a non_iid_ness=1
 
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python run.py \
+OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.8.12/bin/python run.py \
 --arch resnet_evonorm20 --optimizer ${optimizer} \
 --experiment demo --manual_seed ${list_of_seeds} \
 --data cifar10 --pin_memory True \
@@ -169,5 +169,5 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 $HOME/conda/envs/pytorch-py3.6/bin/python ru
 --lr_scheduler MultiStepLR --lr_decay 0.1 --lr_milestone_ratios 0.5,0.75 \
 --weight_decay 1e-4 --use_nesterov True --momentum_factor 0.9 \
 --hostfile hostfile --graph_topology ${list_of_graph_topologies} --track_time True --display_tracked_time True \
---python_path $HOME/conda/envs/pytorch-py3.6/bin/python --mpi_path $HOME/.openmpi/
+--python_path $HOME/conda/envs/pytorch-py3.8.12/bin/python --mpi_path $HOME/.openmpi/
 ```
